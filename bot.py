@@ -233,4 +233,36 @@ async def edit(
         f"✅ {boss} atualizado\n\n"
         f"🕒 Novo respawn: {horario}"
     )
+@bot.tree.command(
+    name="remove",
+    description="Remove um boss dos registros"
+)
+@app_commands.autocomplete(
+    boss=boss_autocomplete
+)
+async def remove(
+    interaction: discord.Interaction,
+    boss: str
+):
+
+    if not has_permission(interaction.user):
+        await interaction.response.send_message(
+            "Sem permissão para usar este comando.",
+            ephemeral=True
+        )
+        return
+
+    if boss not in boss_data:
+        await interaction.response.send_message(
+            "Boss não encontrado nos registros."
+        )
+        return
+
+    del boss_data[boss]
+
+    save_data(boss_data)
+
+    await interaction.response.send_message(
+        f"✅ {boss} removido dos registros."
+    )
 bot.run(TOKEN)
