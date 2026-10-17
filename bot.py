@@ -125,6 +125,20 @@ def has_permission(member):
     name="respawns",
     description="Mostra todos os respawns registrados"
 )
+async def respawns(interaction: discord.Interaction):
+
+    if not boss_data:
+        await interaction.response.send_message(
+            "Nenhum boss registrado."
+        )
+        return
+
+    mensagem = ""
+
+    for boss, horario in boss_data.items():
+        mensagem += f"➤ {boss}: {horario}\n"
+
+    await interaction.response.send_message(mensagem)
 @bot.tree.command(
     name="kill",
     description="Registra a morte de um boss"
