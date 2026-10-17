@@ -116,7 +116,7 @@ async def on_ready():
         print(f"Erro ao sincronizar comandos: {e}")
 
     if not verificar_respawns.is_running():
-    verificar_respawns.start()
+        verificar_respawns.start()
 
     print(f"{bot.user} online!")
     print("Wanaka Oracle iniciado.")
