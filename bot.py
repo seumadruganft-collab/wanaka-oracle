@@ -161,7 +161,7 @@ async def kill(
         )
         return
 
-    agora = datetime.now()
+    agora = datetime.now() - timedelta(hours=3)
 
     proximo = agora + timedelta(
         minutes=BOSSES[boss]
