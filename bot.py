@@ -79,6 +79,19 @@ BOSSES = {
     "T5Void": 180
 }
 
+async def boss_autocomplete(
+    interaction: discord.Interaction,
+    current: str
+):
+    return [
+        app_commands.Choice(
+            name=boss,
+            value=boss
+        )
+        for boss in BOSSES.keys()
+        if current.lower() in boss.lower()
+    ][:25]
+
 def load_data():
     try:
         with open("bosses.json", "r") as f:
@@ -142,6 +155,9 @@ async def respawns(interaction: discord.Interaction):
 @bot.tree.command(
     name="kill",
     description="Registra a morte de um boss"
+)
+@app_commands.autocomplete(
+    boss=boss_autocomplete
 )
 async def kill(
     interaction: discord.Interaction,
