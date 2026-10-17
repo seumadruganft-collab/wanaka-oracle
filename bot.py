@@ -205,4 +205,32 @@ async def respawns(interaction: discord.Interaction):
         mensagem += f"➤ {boss}: {horario}\n"
 
     await interaction.response.send_message(mensagem)
+    @bot.tree.command(
+    name="edit",
+    description="Edita o horário de um boss"
+)
+@app_commands.autocomplete(
+    boss=boss_autocomplete
+)
+async def edit(
+    interaction: discord.Interaction,
+    boss: str,
+    horario: str
+):
+
+    if not has_permission(interaction.user):
+        await interaction.response.send_message(
+            "Sem permissão para usar este comando.",
+            ephemeral=True
+        )
+        return
+
+    boss_data[boss] = horario
+
+    save_data(boss_data)
+
+    await interaction.response.send_message(
+        f"✅ {boss} atualizado\n\n"
+        f"🕒 Novo respawn: {horario}"
+    )
 bot.run(TOKEN)
