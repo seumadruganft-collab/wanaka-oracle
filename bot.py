@@ -125,6 +125,42 @@ def has_permission(member):
     name="respawns",
     description="Mostra todos os respawns registrados"
 )
+@bot.tree.command(
+    name="kill",
+    description="Registra a morte de um boss"
+)
+async def kill(
+    interaction: discord.Interaction,
+    boss: str
+):
+
+    if not has_permission(interaction.user):
+        await interaction.response.send_message(
+            "Sem permissão para usar este comando.",
+            ephemeral=True
+        )
+        return
+
+    if boss not in BOSSES:
+        await interaction.response.send_message(
+            "Boss inválido."
+        )
+        return
+
+    agora = datetime.now()
+
+    proximo = agora + timedelta(
+        minutes=BOSSES[boss]
+    )
+
+    boss_data[boss] = proximo.strftime("%H:%M")
+
+    save_data(boss_data)
+
+    await interaction.response.send_message(
+        f"✅ {boss} registrado\n\n"
+        f"🕒 Próximo respawn: {proximo.strftime('%H:%M')}"
+    )
 async def respawns(interaction: discord.Interaction):
 
     if not boss_data:
