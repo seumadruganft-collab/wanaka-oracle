@@ -205,7 +205,7 @@ async def respawns(interaction: discord.Interaction):
         mensagem += f"➤ {boss}: {horario}\n"
 
     await interaction.response.send_message(mensagem)
-    @bot.tree.command(
+@bot.tree.command(
     name="edit",
     description="Edita o horário de um boss"
 )
