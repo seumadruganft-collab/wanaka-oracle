@@ -116,6 +116,7 @@ def has_permission(member):
     return any(role.name in ALLOWED_ROLES for role in member.roles)
 @bot.event
 async def on_ready():
+
     try:
         synced = await bot.tree.sync()
         print(f"{len(synced)} comandos sincronizados")
@@ -123,7 +124,7 @@ async def on_ready():
         print(f"Erro ao sincronizar comandos: {e}")
 
     if not verificar_respawns.is_running():
-    verificar_respawns.start()
+        verificar_respawns.start()
 
     print(f"{bot.user} online!")
     print("Wanaka Oracle iniciado.")
