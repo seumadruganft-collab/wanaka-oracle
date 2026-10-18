@@ -151,10 +151,10 @@ async def respawns(interaction: discord.Interaction):
 
     mensagem = ""
 
-    for boss, dados in boss_data.items():
-    mensagem += f"➤ {boss}: {dados['respawn']}\n"
+for chefe, dados in boss_data.items():
+    mensagem += f"➤ {chefe}: {dados['respawn']}\n"
 
-    await interaction.response.send_message(mensagem)
+await interaction.response.send_message(mensagem)
 @bot.tree.command(
     name="kill",
     description="Registra a morte de um boss"
