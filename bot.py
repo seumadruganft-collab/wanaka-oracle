@@ -254,14 +254,14 @@ async def remove(
     await interaction.response.send_message(
         f"✅ {boss} removido dos registros."
     )
-@tasks.loop(seconds=30)
+@tasks.loop(minutes=1)
 async def verificar_respawns():
 
     canal = await bot.fetch_channel(
         CHAT_CHANNEL_ID
     )
 
-    print(
-        f"Canal encontrado: {canal.name}"
+    await canal.send(
+        "✅ TESTE DO WANAKA ORACLE"
     )
 bot.run(TOKEN)
