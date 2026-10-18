@@ -151,8 +151,8 @@ async def respawns(interaction: discord.Interaction):
 
     mensagem = ""
 
-    for boss, horario in boss_data.items():
-        mensagem += f"➤ {boss}: {horario}\n"
+    for boss, dados in boss_data.items():
+    mensagem += f"➤ {boss}: {dados['respawn']}\n"
 
     await interaction.response.send_message(mensagem)
 @bot.tree.command(
@@ -186,7 +186,11 @@ async def kill(
         minutes=BOSSES[boss]
     )
 
-    boss_data[boss] = proximo.strftime("%H:%M")
+    boss_data[boss] = {
+    "respawn": proximo.strftime("%H:%M"),
+    "alerta5": False,
+    "alerta0": False
+}
 
     save_data(boss_data)
 
@@ -228,7 +232,12 @@ async def edit(
         )
         return
 
-    boss_data[boss] = horario
+    boss_data[boss] = {
+    "respawn": horario,
+    "alerta5": False,
+    "alerta0": False
+}
+``
 
     save_data(boss_data)
 
@@ -270,14 +279,19 @@ async def remove(
     )
 @tasks.loop(seconds=30)
 async def verificar_respawns():
+    print("Verificando respawns...")
 
-    canal = bot.get_channel(CHAT_CHANNEL_ID)
+    canal = await bot.fetch_channel(CHAT_CHANNEL_ID)
 
     agora = datetime.now() - timedelta(hours=3)
 
     alterado = False
+if canal is None:
+    print("Canal não encontrado")
+    return
 
     for boss, dados in boss_data.items():
+        print(f"Boss: {boss}")
 
         horario = datetime.strptime(
             dados["respawn"],
