@@ -3,7 +3,7 @@ import json
 from datetime import datetime, timedelta
 from discord import app_commands
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 TOKEN = os.getenv("DISCORD_TOKEN")
 
@@ -121,6 +121,9 @@ async def on_ready():
         print(f"{len(synced)} comandos sincronizados")
     except Exception as e:
         print(f"Erro ao sincronizar comandos: {e}")
+
+    if not verificar_respawns.is_running():
+    verificar_respawns.start()
 
     print(f"{bot.user} online!")
     print("Wanaka Oracle iniciado.")
@@ -250,4 +253,5 @@ async def remove(
     await interaction.response.send_message(
         f"✅ {boss} removido dos registros."
     )
+
 bot.run(TOKEN)
