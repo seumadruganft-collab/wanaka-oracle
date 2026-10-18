@@ -3,13 +3,20 @@ import json
 from datetime import datetime, timedelta
 from discord import app_commands
 import discord
-from discord.ext import commands, tasks
+from discord.ext import commands
 
 TOKEN = os.getenv("DISCORD_TOKEN")
 
 GUILD_ID = 1375407665827680326
 BOSS_CHANNEL_ID = 1560459894568525834
 CHAT_CHANNEL_ID = 1498671478999220224
+MAPAS = {
+    "T1": "Bosque dos Aprendizes (T1)",
+    "T2": "Floresta Grande (T2)",
+    "T3": "Pântano (T3)",
+    "T4": "Deserto / Neve (T4)",
+    "T5": "Cemitério (T5)"
+}
 
 ALLOWED_ROLES = ["Líder", "Staff"]
 
@@ -115,28 +122,9 @@ async def on_ready():
     except Exception as e:
         print(f"Erro ao sincronizar comandos: {e}")
 
-    if not verificar_respawns.is_running():
-        verificar_respawns.start()
-
     print(f"{bot.user} online!")
     print("Wanaka Oracle iniciado.")
-
-def load_data():
-    try:
-        with open("bosses.json", "r") as f:
-            return json.load(f)
-    except:
-        return {}
-
-def save_data(data):
-    with open("bosses.json", "w") as f:
-        json.dump(data, f, indent=4)
-
-boss_data = load_data()
-
-def has_permission(member):
-    return any(role.name in ALLOWED_ROLES for role in member.roles)
-
+    
 @bot.tree.command(
     name="respawns",
     description="Mostra todos os respawns registrados"
@@ -151,10 +139,10 @@ async def respawns(interaction: discord.Interaction):
 
     mensagem = ""
 
-for chefe, dados in boss_data.items():
-    mensagem += f"➤ {chefe}: {dados['respawn']}\n"
+    for boss, dados in boss_data.items():
+        mensagem += f"➤ {boss}: {dados['respawn']}\n"
 
-await interaction.response.send_message(mensagem)
+    await interaction.response.send_message(mensagem)
 @bot.tree.command(
     name="kill",
     description="Registra a morte de um boss"
@@ -186,11 +174,11 @@ async def kill(
         minutes=BOSSES[boss]
     )
 
-boss_data[boss] = {
-    "respawn": horario,
-    "alerta5": False,
-    "alerta0": False
-}
+    boss_data[boss] = {
+        "respawn": proximo.strftime("%H:%M"),
+        "alerta5": False,
+        "alerta0": False
+    }
 
     save_data(boss_data)
 
@@ -198,20 +186,6 @@ boss_data[boss] = {
         f"✅ {boss} registrado\n\n"
         f"🕒 Próximo respawn: {proximo.strftime('%H:%M')}"
     )
-async def respawns(interaction: discord.Interaction):
-
-    if not boss_data:
-        await interaction.response.send_message(
-            "Nenhum boss registrado."
-        )
-        return
-
-    mensagem = ""
-
-for boss, dados in boss_data.items():
-    mensagem += f"➤ {boss}: {dados['respawn']}\n"
-
-    await interaction.response.send_message(mensagem)
 @bot.tree.command(
     name="edit",
     description="Edita o horário de um boss"
@@ -232,12 +206,11 @@ async def edit(
         )
         return
 
-boss_data[boss] = {
-    "respawn": horario,
-    "alerta5": False,
-    "alerta0": False
-}
-``
+    boss_data[boss] = {
+        "respawn": horario,
+        "alerta5": False,
+        "alerta0": False
+    }
 
     save_data(boss_data)
 
@@ -277,64 +250,4 @@ async def remove(
     await interaction.response.send_message(
         f"✅ {boss} removido dos registros."
     )
-@tasks.loop(seconds=30)
-async def verificar_respawns():
-    print("Verificando respawns...")
-
-    canal = await bot.fetch_channel(CHAT_CHANNEL_ID)
-
-    agora = datetime.now() - timedelta(hours=3)
-
-    alterado = False
-if canal is None:
-    print("Canal não encontrado")
-    return
-
-    for boss, dados in boss_data.items():
-        print(f"Boss: {boss}")
-
-        horario = datetime.strptime(
-            dados["respawn"],
-            "%H:%M"
-        )
-
-        respawn = agora.replace(
-            hour=horario.hour,
-            minute=horario.minute,
-            second=0,
-            microsecond=0
-        )
-
-        minutos = (respawn - agora).total_seconds() / 60
-
-        mapa = MAPAS.get(
-            boss[:2],
-            "Mapa Desconhecido"
-        )
-
-        if minutos <= 5 and not dados["alerta5"]:
-
-            await canal.send(
-                f"@everyone\n\n"
-                f"⚠️ {boss} nasce em 5 minutos\n\n"
-                f"📍 {mapa}\n"
-                f"🕒 {dados['respawn']}"
-            )
-
-            dados["alerta5"] = True
-            alterado = True
-
-        if minutos <= 0 and not dados["alerta0"]:
-
-            await canal.send(
-                f"@everyone\n\n"
-                f"🔥 {boss} disponível agora\n\n"
-                f"📍 {mapa}"
-            )
-
-            dados["alerta0"] = True
-            alterado = True
-
-    if alterado:
-        save_data(boss_data)
 bot.run(TOKEN)
