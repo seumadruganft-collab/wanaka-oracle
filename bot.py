@@ -186,8 +186,8 @@ async def kill(
         minutes=BOSSES[boss]
     )
 
-    boss_data[boss] = {
-    "respawn": proximo.strftime("%H:%M"),
+boss_data[boss] = {
+    "respawn": horario,
     "alerta5": False,
     "alerta0": False
 }
@@ -208,8 +208,8 @@ async def respawns(interaction: discord.Interaction):
 
     mensagem = ""
 
-    for boss, horario in boss_data.items():
-        mensagem += f"➤ {boss}: {horario}\n"
+for boss, dados in boss_data.items():
+    mensagem += f"➤ {boss}: {dados['respawn']}\n"
 
     await interaction.response.send_message(mensagem)
 @bot.tree.command(
@@ -232,7 +232,7 @@ async def edit(
         )
         return
 
-    boss_data[boss] = {
+boss_data[boss] = {
     "respawn": horario,
     "alerta5": False,
     "alerta0": False
