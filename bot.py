@@ -256,5 +256,12 @@ async def remove(
     )
 @tasks.loop(seconds=30)
 async def verificar_respawns():
-    print("Loop de respawn executando...")
+
+    canal = await bot.fetch_channel(
+        CHAT_CHANNEL_ID
+    )
+
+    print(
+        f"Canal encontrado: {canal.name}"
+    )
 bot.run(TOKEN)
