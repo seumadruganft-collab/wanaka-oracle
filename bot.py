@@ -268,6 +268,7 @@ async def verificar_respawns():
     canal = await bot.fetch_channel(
         CHAT_CHANNEL_ID
     )
+    print(f"Canal: {canal.name}")
 
     agora = datetime.now() - timedelta(hours=3)
 
@@ -275,6 +276,7 @@ async def verificar_respawns():
     remover = []
 
     for boss, dados in boss_data.items():
+        print(f"Boss encontrado: {boss}")
         print(f"Verificando {boss} - {dados['respawn']}")
 
         horario = datetime.strptime(
