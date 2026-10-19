@@ -286,24 +286,23 @@ async def verificar_respawns():
             respawn - agora
         ).total_seconds() / 60
 
+        mapa = MAPAS.get(
+            boss[:2],
+            "Mapa Desconhecido"
+        )
+
         if (
             minutos <= 5
             and minutos > 0
             and not dados["alerta5"]
         ):
 
-mapa = MAPAS.get(
-    boss[:2],
-    "Mapa Desconhecido"
-)
-
-await canal.send(
-    f"@everyone\n\n"
-    f"⚠️ {boss} nasce em 5 minutos\n\n"
-    f"📍 {mapa}\n"
-    f"🕒 {dados['respawn']}"
-)
-``
+            await canal.send(
+                f"@everyone\n\n"
+                f"⚠️ {boss} nasce em 5 minutos\n\n"
+                f"📍 {mapa}\n"
+                f"🕒 {dados['respawn']}"
+            )
 
             dados["alerta5"] = True
             alterado = True
@@ -313,18 +312,16 @@ await canal.send(
             and not dados["alerta0"]
         ):
 
-await canal.send(
-    f"@everyone\n\n"
-    f"🔥 {boss} disponível agora\n\n"
-    f"📍 {mapa}"
-)
+            await canal.send(
+                f"@everyone\n\n"
+                f"🔥 {boss} disponível agora\n\n"
+                f"📍 {mapa}"
+            )
 
             dados["alerta0"] = True
-
-            del boss_data[boss]
-
             alterado = True
 
     if alterado:
         save_data(boss_data)
-bot.run(TOKEN)
+    
+    bot.run(TOKEN)
