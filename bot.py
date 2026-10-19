@@ -328,8 +328,8 @@ async def verificar_respawns():
                 f"📍 {mapa}\n"
                 f"🕒 {dados['respawn']}"
             )
-
             dados["alerta5"] = True
+            save_data(dados_salvos)
             alterado = True
 
         if (
@@ -344,9 +344,8 @@ async def verificar_respawns():
             )
 
             dados["alerta0"] = True
-
+            save_data(dados_salvos)
             remover.append(boss)
-
             alterado = True
 
     for boss in remover:
