@@ -136,7 +136,9 @@ async def on_ready():
 )
 async def respawns(interaction: discord.Interaction):
 
-    if not boss_data:
+    dados_salvos = load_data()
+
+    if not dados_salvos:
         await interaction.response.send_message(
             "Nenhum boss registrado."
         )
@@ -144,12 +146,11 @@ async def respawns(interaction: discord.Interaction):
 
     mensagem = ""
 
-dados_salvos = load_data()
+    lista = sorted(
+        dados_salvos.items(),
+        key=lambda item: item[1]["respawn"]
+    )
 
-lista = sorted(
-    dados_salvos.items(),
-    key=lambda item: item[1]["respawn"]
-)
     for boss, dados in lista:
         mensagem += f"➤ {boss}: {dados['respawn']}\n"
 
