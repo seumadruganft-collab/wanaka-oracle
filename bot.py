@@ -253,8 +253,8 @@ async def remove(
 
     save_data(boss_data)
 
-    await interaction.response.send_message(
-        f"✅ {boss} removido dos registros."
-    )
+await interaction.response.send_message(
+    f"✅ {boss} removido dos registros."
+)
 
-    bot.run(TOKEN)
+bot.run(TOKEN)
