@@ -259,7 +259,7 @@ async def remove(
     await interaction.response.send_message(
         f"✅ {boss} removido dos registros."
     )
-    @tasks.loop(seconds=30)
+@tasks.loop(seconds=30)
 async def verificar_respawns():
 
     canal = await bot.fetch_channel(
@@ -336,4 +336,5 @@ async def verificar_respawns():
 @tasks.loop(seconds=30)
 async def verificar_respawns():
     print("Loop de respawn executando...")
+    
 bot.run(TOKEN)
