@@ -143,7 +143,12 @@ async def respawns(interaction: discord.Interaction):
 
     mensagem = ""
 
-    for boss, dados in boss_data.items():
+lista = sorted(
+    boss_data.items(),
+    key=lambda item: item[1]["respawn"]
+)
+
+for boss, dados in lista:
         mensagem += f"➤ {boss}: {dados['respawn']}\n"
 
     await interaction.response.send_message(mensagem)
@@ -287,11 +292,18 @@ async def verificar_respawns():
             and not dados["alerta5"]
         ):
 
-            await canal.send(
-                f"@everyone\n\n"
-                f"⚠️ {boss} nasce em 5 minutos\n"
-                f"🕒 {dados['respawn']}"
-            )
+mapa = MAPAS.get(
+    boss[:2],
+    "Mapa Desconhecido"
+)
+
+await canal.send(
+    f"@everyone\n\n"
+    f"⚠️ {boss} nasce em 5 minutos\n\n"
+    f"📍 {mapa}\n"
+    f"🕒 {dados['respawn']}"
+)
+``
 
             dados["alerta5"] = True
             alterado = True
@@ -301,12 +313,16 @@ async def verificar_respawns():
             and not dados["alerta0"]
         ):
 
-            await canal.send(
-                f"@everyone\n\n"
-                f"🔥 {boss} disponível agora"
-            )
+await canal.send(
+    f"@everyone\n\n"
+    f"🔥 {boss} disponível agora\n\n"
+    f"📍 {mapa}"
+)
 
             dados["alerta0"] = True
+
+            del boss_data[boss]
+
             alterado = True
 
     if alterado:
