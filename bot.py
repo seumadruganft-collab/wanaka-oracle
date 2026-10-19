@@ -123,9 +123,6 @@ async def on_ready():
     except Exception as e:
         print(f"Erro ao sincronizar comandos: {e}")
 
-    if not verificar_respawns.is_running():
-        verificar_respawns.start()
-
     print(f"{bot.user} online!")
     print("Wanaka Oracle iniciado.")
     
@@ -259,66 +256,5 @@ async def remove(
     await interaction.response.send_message(
         f"✅ {boss} removido dos registros."
     )
-@tasks.loop(seconds=30)
-async def verificar_respawns():
 
-    canal = await bot.fetch_channel(CHAT_CHANNEL_ID)
-
-    agora = datetime.now() - timedelta(hours=3)
-
-    alterado = False
-
-    for boss, dados in boss_data.items():
-
-        horario = datetime.strptime(
-            dados["respawn"],
-            "%H:%M"
-        )
-
-        respawn = agora.replace(
-            hour=horario.hour,
-            minute=horario.minute,
-            second=0,
-            microsecond=0
-        )
-
-        minutos = (
-            respawn - agora
-        ).total_seconds() / 60
-
-        mapa = MAPAS.get(
-            boss[:2],
-            "Mapa Desconhecido"
-        )
-
-        if (
-            minutos <= 5
-            and minutos > 0
-            and not dados["alerta5"]
-        ):
-
-            await canal.send(
-                f"@everyone\n\n"
-                f"⚠️ {boss} nasce em 5 minutos\n\n"
-                f"📍 {mapa}\n"
-                f"🕒 {dados['respawn']}"
-            )
-
-            dados["alerta5"] = True
-            alterado = True
-
-        if (
-            minutos <= 0
-            and not dados["alerta0"]
-        ):
-
-            await canal.send(
-                f"@everyone\n\n"
-                f"🔥 {boss} disponível agora\n\n"
-                f"📍 {mapa}"
-            )
-
-            dados["alerta0"] = True
-            alterado = True
-    
     bot.run(TOKEN)
