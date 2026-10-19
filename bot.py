@@ -144,11 +144,12 @@ async def respawns(interaction: discord.Interaction):
 
     mensagem = ""
 
-    lista = sorted(
-        boss_data.items(),
-        key=lambda item: item[1]["respawn"]
-    )
+dados_salvos = load_data()
 
+lista = sorted(
+    dados_salvos.items(),
+    key=lambda item: item[1]["respawn"]
+)
     for boss, dados in lista:
         mensagem += f"➤ {boss}: {dados['respawn']}\n"
 
@@ -184,13 +185,15 @@ async def kill(
         minutes=BOSSES[boss]
     )
 
-    boss_data[boss] = {
+    dados_salvos = load_data()
+
+    dados_salvos[boss] = {
         "respawn": proximo.strftime("%H:%M"),
         "alerta5": False,
         "alerta0": False
     }
 
-    save_data(boss_data)
+    save_data(dados_salvos)
 
     await interaction.response.send_message(
         f"✅ {boss} registrado\n\n"
@@ -216,13 +219,15 @@ async def edit(
         )
         return
 
-    boss_data[boss] = {
+    dados_salvos = load_data()
+
+    dados_salvos[boss] = {
         "respawn": horario,
         "alerta5": False,
         "alerta0": False
     }
 
-    save_data(boss_data)
+    save_data(dados_salvos)
 
     await interaction.response.send_message(
         f"✅ {boss} atualizado\n\n"
@@ -253,9 +258,11 @@ async def remove(
         )
         return
 
-    del boss_data[boss]
+    dados_salvos = load_data()
 
-    save_data(boss_data)
+    del dados_salvos[boss]
+
+    save_data(dados_salvos)
 
     await interaction.response.send_message(
         f"✅ {boss} removido dos registros."
