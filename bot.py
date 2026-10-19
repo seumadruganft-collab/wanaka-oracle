@@ -272,6 +272,7 @@ async def verificar_respawns():
     remover = []
 
     for boss, dados in boss_data.items():
+        print(f"Verificando {boss} - {dados['respawn']}")
 
         horario = datetime.strptime(
             dados["respawn"],
@@ -294,6 +295,7 @@ async def verificar_respawns():
             "Mapa Desconhecido"
         )
 
+        print(f"Verificando {boss} - {dados['respawn']}")
         if (
             minutos <= 5
             and minutos > 0
@@ -335,6 +337,16 @@ async def verificar_respawns():
 
 @tasks.loop(seconds=30)
 async def verificar_respawns():
-    print("Loop de respawn executando...")
+
+    canal = await bot.fetch_channel(
+        CHAT_CHANNEL_ID
+    )
+
+    agora = datetime.now() - timedelta(hours=3)
+
+    alterado = False
+    remover = []
+
+    ...
     
 bot.run(TOKEN)
