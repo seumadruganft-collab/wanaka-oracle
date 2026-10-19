@@ -320,8 +320,5 @@ async def verificar_respawns():
 
             dados["alerta0"] = True
             alterado = True
-
-    if alterado:
-        save_data(boss_data)
     
     bot.run(TOKEN)
