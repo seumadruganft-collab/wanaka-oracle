@@ -277,7 +277,7 @@ async def verificar_respawns():
 
     except Exception as e:
         print(f"ERRO NO LOOP: {e}")
-    print("LOOP EXECUTANDO")
+        print("LOOP EXECUTANDO")
 
     canal = await bot.fetch_channel(
         CHAT_CHANNEL_ID
@@ -288,8 +288,9 @@ async def verificar_respawns():
 
     alterado = False
     remover = []
+    dados_salvos = load_data()
 
-    for boss, dados in boss_data.items():
+    for boss, dados in dados_salvos.items():
         print(f"Boss encontrado: {boss}")
         print(f"Verificando {boss} - {dados['respawn']}")
 
@@ -366,6 +367,72 @@ async def verificar_respawns():
     alterado = False
     remover = []
 
-    ...
+    dados_salvos = load_data()
+
+    for boss, dados in dados_salvos.items():
+
+        print(
+            f"{boss} | agora={agora.strftime('%H:%M')} | respawn={dados['respawn']}"
+        )
+
+        horario = datetime.strptime(
+            dados["respawn"],
+            "%H:%M"
+        )
+
+        respawn = agora.replace(
+            hour=horario.hour,
+            minute=horario.minute,
+            second=0,
+            microsecond=0
+        )
+
+        minutos = (
+            respawn - agora
+        ).total_seconds() / 60
+
+        mapa = MAPAS.get(
+            boss[:2],
+            "Mapa Desconhecido"
+        )
+
+        if (
+            minutos <= 5
+            and minutos > 0
+            and not dados["alerta5"]
+        ):
+
+            await canal.send(
+                f"@everyone\n\n"
+                f"⚠️ {boss} nasce em 5 minutos\n\n"
+                f"📍 {mapa}\n"
+                f"🕒 {dados['respawn']}"
+            )
+
+            dados["alerta5"] = True
+            alterado = True
+
+        if (
+            minutos <= 0
+            and not dados["alerta0"]
+        ):
+
+            await canal.send(
+                f"@everyone\n\n"
+                f"🔥 {boss} disponível agora\n\n"
+                f"📍 {mapa}"
+            )
+
+            dados["alerta0"] = True
+
+            remover.append(boss)
+
+            alterado = True
+
+    for boss in remover:
+        del dados_salvos[boss]
+
+    if alterado:
+        save_data(dados_salvos)
     
 bot.run(TOKEN)
