@@ -124,6 +124,7 @@ async def on_ready():
         print(f"Erro ao sincronizar comandos: {e}")
 
     if not verificar_respawns.is_running():
+        print("INICIANDO LOOP")
         verificar_respawns.start()
 
     print(f"{bot.user} online!")
@@ -261,6 +262,8 @@ async def remove(
     )
 @tasks.loop(seconds=30)
 async def verificar_respawns():
+
+    print("LOOP EXECUTANDO")
 
     canal = await bot.fetch_channel(
         CHAT_CHANNEL_ID
