@@ -143,12 +143,12 @@ async def respawns(interaction: discord.Interaction):
 
     mensagem = ""
 
-lista = sorted(
-    boss_data.items(),
-    key=lambda item: item[1]["respawn"]
-)
+    lista = sorted(
+        boss_data.items(),
+        key=lambda item: item[1]["respawn"]
+    )
 
-for boss, dados in lista:
+    for boss, dados in lista:
         mensagem += f"➤ {boss}: {dados['respawn']}\n"
 
     await interaction.response.send_message(mensagem)
