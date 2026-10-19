@@ -265,6 +265,20 @@ async def verificar_respawns():
 
     print("LOOP EXECUTANDO")
 
+    try:
+
+        canal = await bot.fetch_channel(
+            CHAT_CHANNEL_ID
+        )
+
+        print(f"Canal: {canal.name}")
+
+        print(f"Bosses carregados: {boss_data}")
+
+    except Exception as e:
+        print(f"ERRO NO LOOP: {e}")
+    print("LOOP EXECUTANDO")
+
     canal = await bot.fetch_channel(
         CHAT_CHANNEL_ID
     )
